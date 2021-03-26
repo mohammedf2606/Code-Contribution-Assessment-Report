@@ -1,0 +1,25 @@
+\chapter{Appendix}
+\section{Appendix 1: Proof of Claim 1}
+\begin{proof}
+Let $\left \lfloor x \rceil \right \in \mathbb{Z}^+$ be the closest integer to \textit{x}. The following holds: 
+\begin{align*}
+x - \frac{1}{2} \leq \left \lfloor x \rceil \right \textless x + \frac{1}{2}
+\end{align*}
+
+For $x = n * threshold$ where $n > 0$ and $threshold \in \mathbb{R} \mid 0 < threshold \leq 1$:
+\begin{align*}
+n * threshold - \frac{1}{2} \leq \left \lfloor n * threshold \rceil \right \textless n * threshold + \frac{1}{2}\\
+\longrightarrow \frac{n * threshold - \frac{1}{2}}{n} \leq \frac{\left \lfloor n * threshold \rceil \right}{n} < \frac{n * threshold + \frac{1}{2}}{n}\\
+\longrightarrow \frac{n * threshold}{n} - \frac{\frac{1}{2}}{n} \leq \frac{\left \lfloor n * threshold \rceil \right}{n} < \frac{n * threshold}{n} + \frac{\frac{1}{2}}{n} \\ 
+\longrightarrow threshold - \frac{1}{2n} \leq \frac{\left \lfloor n * threshold \rceil \right}{n} < threshold + \frac{1}{2n} \\
+\longrightarrow mt - mt - \frac{1}{2n} \leq \frac{\left \lfloor n * threshold \rceil \right}{n} - mt < mt - mt + \frac{1}{2n}
+\end{align*}
+
+Since the middle section of the equality can be interpreted as the error when applying a percentage over a discrete data set, we can call this as \textit{d} \citep{stephen_post_2017}. So:
+\begin{align*}
+-\frac{1}{2n} \leq d < \frac{1}{2n}\\
+\longrightarrow \abs{d} \leq \frac{1}{2n}
+\end{align*}
+Therefore the maximum of \textit{d} is $\abs{d_{max}} = \frac{1}{2n}$.
+\end{proof}
+

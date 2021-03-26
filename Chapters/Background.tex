@@ -1,0 +1,41 @@
+\chapter{Background}
+This chapter will explore current and existing applications of estimating code contributions and will include a literature review of various measures in use currently.
+\section{Definitions}
+Code contribution concerns identifying which user in the repository was the author of a section of the codebase and ranking the aforementioned user based on the relative extent of the contribution when compared to other authors in the repository \citep{10.1007/s10664-017-9575-4}.
+
+This project will also be looking at and measuring code quality which in this project will be defined as the number of commits it persists through from creation (i.e. if the code is older, it is more likely to be important, giving it a reason to be in the codebase) \citep{10.1093/iwc/iwx010}. A codebase is a collection of source code that is used to create and build a piece of software \citep{wiki:codebase}. In relation to the project, codebases are the subset of the repositories in which the student group projects are stored. Here, a repository is a data structure that is used in version control (through version control software such as Git and Subversion) to store metadata about a set of files or directory structure \cite{collins-sussman_fitzpatrick_pilato_2004}.
+
+\section{Literature Review}
+Existing ranking methods that have been explored seem to utilise features and properties provided as a part of existing version control systems. These methods seek to calculate how much code is implemented by each user to the target project by measuring the contributions to the files in the project. However, this only looks into one of the levels of abstraction available for analysis when trying to measure code contributions.
+
+The top level of abstraction available for analysis is to relate the contributions for one user and comparing that the total contributions to a repository. This is one of the approaches currently in use by the marking system for the student group projects. This approach uses the basis of which version control systems work, in which a user contributes a collection of work for completing a single task (known as a commit). Trying to formalise this approach, if \textit{c} is defined as the total number of commits made to an entire repository and \textit{$c_u$} is the total number of commits made by a user \textit{u}, then the relative proportion of the contribution by the user \textit{u} would be: 
+\begin{equation} \label{eq:1}
+  contribution_u = \frac{c_u}{c}
+\end{equation}
+
+However, by definition, a commit can contain multiple changes to multiple files, making the method explained in the equation \ref{eq:1} above inaccurate. Another approach uses the number of files affected and changed by each commit \citep{10.1145/2025113.2025119}. In this approach, the concept known as "touching" is shown in the following equation:
+\begin{equation} \label{eq:2}
+    touch_u = \frac{x_u}{x}
+\end{equation}
+where \textit{x} is the total number of changes in the repository throughout all the files and \textit{$x_u$} denotes all the changes made by the user \textit{u}. These approaches work when a high level view of contributions are required. 
+
+Another level of abstraction is to look at contributions on a modular level. Here, modules refer to high level components that can be found in files such as functions and classes \cite{10.1145/2601248.2601283}. The formula for this concept is the same to equation \ref{eq:1} and \ref{eq:2} with the formula being applied to modules instead of considering commits.
+
+A lower level of abstraction can identify the line changes made to the files by using algorithms applied by version control systems to track file changes. These algorithms are based on the \textit{longest common subsequence} problem \citep{10.1145/322063.322075} and the many implementations of these algorithms are known as \textit{diff}. For instance, the diff algorithm used by the git version control system can track line-level changes in a repository. These line changes could be line additions, deletions, or modifications. Awarding of these additions and modifications goes to the user that contributed a particular commit. This ranking system is currently used by tools such as \textit{git-fame} \citep{oleander_2020} and \textit{git-blame} \citep{git-blame_2020}. However, these tools are limited because modifications are always attributed to last person to modify it, meaning some users may have commits where their lines of code were removed or replaced. 
+
+Following this drawback, an improved version of these tools was devised called \textit{git-author} which is able to "recover more information than git-blame for about 10\% of lines" \citep{git-author_2013}. This method uses a graph of line changes and produces a weighted score for each user and each line. It is also able to detect line movement using a diff tool which has been adapted called \textit{ldiff} \citep{5070564}. To produce a weighted score, the \textit{ldiff} tool utilises the Wagner-Fischer algorithm \citep{10.1145/321796.321811} through a set of line comparisons. Looking into the algorithm, the method described is partially used as a character-level measure.
+
+A different perspective to producing rankings for contributions is to calculate the amount of time spent working on a repository for a project. This can be measured if the time a user starts working on the project is recorded, \textit{$T_{i,start}$}, and the time the user stops working on the project, \textit{$T_{i,end}$}, where \textit{i} is the session number from \textit{n} sessions. So, the time spent during a session on the project can be given by:
+\begin{equation}
+    T_i = T_{i,end} - T_{i,start} 
+\end{equation}
+
+As a result, the total time spent on the project by all contributors is \textit{$T = \sum^{N}_{i=1} T_i$}. However, this measure is difficult to measure in a group project in a mostly online environment since the start time for each session may be unavailable because of system restrictions. For example, \textit{git} makes the commit time available which can be used as the end time for a session, but the start time for a session is not available because most users using \textit{git} do not record when they start working on a file. However, the commit time can be used to find the time difference between two commits which can be expressed as the following:
+\begin{equation} \label{eq:3}
+    \delta T_{i, i-1} = T_{i,end} - T_{i-1,end} = B_{i,i-1} + T_i
+\end{equation}
+where {$B_{i,i-1}$} denotes the time spent where the user is not working on the project and is between sessions \textit{i} and \textit{i-1}. If \textit{B} is small enough, the first part of \ref{eq:3} gives a good approximation of the time spent on each session $T_i$. On the other hand, if B is too large (i.e. sleeping) then the previous deduction is proved obsolete. 
+
+Some studies have used code contribution algorithms to predict bugs and the quality of the end product produced by a project \citep{FOUCAULT2015102}. The aforementioned studies have discussed this with regards to whether having many users working on a piece of code is effective in limiting bugs (known as extreme programming) \citep{796139} or if having a single senior author who authored most of the code is more effective \citep{10.1145/2025113.2025119}. 
+
+All the algorithms discussed in this section have both similarities and limitations. All the algorithms are language and size independent but are not resistant to change, are not aware of code quality, and are unable to track movements and rearrangements of code. The only exception to this is \textit{git-author} which is able to track the movements and rearrangements. However, none of the algorithms are able to recognise the code quality of commits from users and all of them favour contributors that have multiple commits. Namely, these algorithms look at the volume of code contributions (at different levels of abstraction) and do not look into code quality.

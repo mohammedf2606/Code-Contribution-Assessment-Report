@@ -1,0 +1,32 @@
+\chapter{Specifications}
+ The application is intended for users that are completing group projects as part of their $2^{nd}$ year software engineering module (5CCS2SEG) to visualise their relative contribution to their group. This chapter will define the various requirements which are needed for this project's accompanying software, from functional requirements to hardware requirements.
+
+\section{Brief}
+The main goal of this project is to create a means of reporting code contributions to a shared code repository using an algorithm to extract the data from repository. The application must display the result of the algorithm in a meaningful way, whether that be a visualisation of graphs or a set of metrics.
+
+\section{Requirements}
+The requirements for this project have been displayed in a tabular form with each requirement being accompanied with the relevant specification for the application being developed. These requirements were developed after studying the existing algorithms that were mentioned in last chapter. Below are the requirements that will need to accomplished by the software being produced:  
+\\
+
+\begin{tabularx}{1\textwidth}{
+  | >{\raggedright\arraybackslash}X 
+  | >{\centering\arraybackslash}X 
+  | >{\raggedleft\arraybackslash}X | }
+\hline
+\textbf{Requirement} & \textbf{Specification} \\ \hline
+
+The user must be able to access the application using their GitHub credentials. & Implement an OAuth integration to the application to allow users to login to the application using their GitHub accounts. \\ \hline
+
+The user must be able to visualise their contributions in a selected repository. & Create basic and user-friendly visualisations that are produced after the repository has been analysed. \\ \hline
+
+The user must receive accurate and correct code contribution information from the application. & Create an algorithm for analysing code contribution using existing pattern matching algorithms. \\ \hline
+
+The user should be able to navigate the web application without guidance. & Create a simple, user-friendly user interface and make the application as accessible as possible. \\ \hline
+
+The user should be able to allow contribution analysis for all their repositories (both private and public). & Implement a dynamic Model-View-Controller infrastructure that creates views and analyses repositories depending on the user's chosen repository. \\ \hline
+
+The user should be able to visualise the contributions of all contributors in a repository. & Create a separate view that displays all users' contribution visualisations, instead of being compared to one user (user vs rest of team). \\ \hline 
+
+The user could be able to see the algorithm's attribution for each user in each file of a repository. & Create a view that displays each file after the contributions have been attributed to the contributors of a repository. This would require the controller for said view to dynamically highlight each user's character changes in a file. \\ \hline
+
+\end{tabularx}
