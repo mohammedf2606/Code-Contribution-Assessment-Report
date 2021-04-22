@@ -1,4 +1,10 @@
-\chapter{Legal, Social, Ethical and Professional Issues}
-Your report should include a chapter with a reasoned discussion about legal, social ethical and professional issues within the context of your project problem. You should also demonstrate that you are aware of the regulations governing your project area and the Code of Conduct \& Code of Good Practice issued by the British Computer Society, and that you have applied their principles, where appropriate, as you carried out your project.
+\chapter{Professional Issues}
+This section explores the various professional issues and the legislation involved with the project. The issues considered include any legal, social, ethical or professional issues. Discussed will also be adherence and any issues with regards to the British Computing Society's Code of Conduct and Code of Good Practice \citep{bcsconduct}.
 
-\section{Section Heading}
+\section{Issues}
+The developed system uses a collection of open source libraries such as Chartkick, Octokit and a number of RubyGems that are conventional for Ruby on Rails projects. This includes Turbolinks, a framework used to improve single-page performance when loading pages via buttons and hyperlinks, and \texttt{sass-rails}, the official Ruby-on-Rails integration of the stylesheet language Sass (Syntactically Awesome Style Sheets). The difference between work created as part of this project and work of others has been explained succinctly throughout this report. Most of the libraries used in this project have licenses permitting use within commercial applications. However, if the application was sold commercially or started making money, a lot of the library choices may require rethinking.
+
+The created application has use of users' information through an API, which has more issues that need to be handled. Firstly, only information required by the application is retrieved from GitHub and it is only used during a single session, after which the information is discarded. No information is stored and all instances of the application are independent of one another. Secondly, the communication between the application and the GitHub API is encrypted using HTTP/SSL. This means if an attacker tried to intercept a user's information, the data the attacker is unreadable without a private key.  
+
+\section{Code of Conduct}
+When designing and implementing of the application, a significant consideration was made to make sure that the process of developing the application followed the British Computer Society's (BCS) Code of Conduct \& Code of Good Practice. The developed application does not provide any functionality that could be utilised to cause misuse. 

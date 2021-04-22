@@ -1,100 +1,107 @@
 \chapter{Design}
+
+\section{Overview}
 The algorithm that has produced as a part of this project has two main components: the first component calculates and finds blocks of code which match between two revisions of the code (i.e. between two commits), the second uses the matching blocks to calculate the code contributions for all of the users that contributed to a single file. The proposed algorithm's abstraction analyses the repository at the character level and has the properties discussed in Section 1.1, namely, awareness of code quality, and versatility to change. The way the project was approached was inspired by a study carried out to test and compare quality of open-source contributions on Wikipedia \citep{10.1145/1531674.1531682}. While this research project was looking into a single language of English and using a tokenisation approach, this project aims to be independent of programming languages. This property is more useful in a student group project environment. The approach proposed for this project (using character-level abstraction) has two main reasons and advantages: the algorithm does not require a tokenisation algorithm for each individual programming language and it also removes subjectiveness for certain tokens or certain sections of code that are recognised as more important (for example, is the main function that is only called once more important than a class method that is called multiple times throughout the code?). Rather, the algorithm assumes and evaluates importance from users' evaluation via modification of the existing code. By definition, any code or characters that has changes made to it by other contributors will persist and is regarded as good quality code.
 
 Calculations between commits are made at a character-level abstraction and are implemented using the concept of longest common subsequence \citep{wiki:lcs}, which is one of the basis of data comparison programs such as the \textit{diff} function (as discussed previously in Section 2.2). The algorithm implemented for the longest common subsequence was initially developed by John W. Ratciff and John A. Obershelp in 1983 and is sometimes referred to as Gestalt Pattern Matching \citep{wiki:gpm}. This algorithm was implemented from scratch in Ruby and was inspired by Python's \textit{difflib} library \citep{python_software_foundation_2021}. This implementation in Python had a class called \textit{SequenceMatcher}, which was the name given to their implementation of the Gestalt Pattern Matching algorithm. \textit{SequenceMatcher} also used an automatic junk management algorithm, which was not implemented in this project as the junk management is carried out a higher level of the algorithm. In this project's implementation of the Gestalt Pattern Matching algorithm, the output produced is a ratio of similarity between two strings \textit{a} and \textit{b} with a list of Match objects (i.e. $m = (a = 1, b = 2, size = 3)$) such that \textit{$m_a$} is the starting index of the matched subsequence in the string \textit{a}, \textit{$m_b$} is the starting index of the matched subsequence in the string \textit{b}, and \textit{$m_{size}$} is the length of the matched subsequence.
 
 The Gestalt Pattern Matching algorithm is efficient when it comes to distinguishing any changes between strings (namely, additions, deletions and replacements). On the other hand, it lacks when it comes to detecting movements within a codebase. Movement events in a codebase, such as major refactoring, are considered by the algorithm as brand new code. Below is an example to demonstrate this behaviour by the Gestalt algorithm:
-\begin{minted}[
-frame=lines,
-framesep=2mm,
-baselinestretch=1.2,
-bgcolor=black,
-linenos
-]{cpp}
-infostream<<"Ban:"<<m_banfilepath;
-std::ofstream os(m_banfilepath);
-if(os.good == false) {
-    infostream<<"Ban failed:"<<m_banfilepath;
-    throw SerializationError("BanM::load()");
-}
-for(std::map<std::string, std::string>
-    ::iterator
-        i = m_ips.begin();
-        i != m_ips.end(); i++)
-{
-    os<<i->first<<"2"<<i->second<<"/n";
-}
-m_modified = false;
-\end{minted}
-\begin{center}
-    \caption{Figure 1: Example code written in C++ \citep{ahola_2018}}
-\end{center}
+\begin{figure}
+    \centering
+    \begin{minted}[
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    bgcolor=black,
+    linenos
+    ]{cpp}
+    infostream<<"Ban:"<<m_banfilepath;
+    std::ofstream os(m_banfilepath);
+    if(os.good == false) {
+        infostream<<"Ban failed:"<<m_banfilepath;
+        throw SerializationError("BanM::load()");
+    }
+    for(std::map<std::string, std::string>
+        ::iterator
+            i = m_ips.begin();
+            i != m_ips.end(); i++)
+    {
+        os<<i->first<<"2"<<i->second<<"/n";
+    }
+    m_modified = false;
+    \end{minted}
+    \caption{Example code written in C++ \citep{ahola_2018}}
+    \label{fig:1}
+\end{figure}
+
 
 
 Another contributor comes to edit the above code and creates a commit with the following revision (the changes have been highlighted in blue):
-
-\setlength{\fboxsep}{1pt}
-\begin{minted}[
-frame=lines,
-framesep=2mm,
-baselinestretch=1.2,
-bgcolor=black,
-linenos,
-escapeinside=||
-]{cpp}
-infostream<<"Ban:"<<m_banfilepath;
-std::o|\colorbox{blue}{string}|stream |\colorbox{blue}{s}|s(|\colorbox{blue}{std::ios\_base}|);
-for(std::map<std::string, std::string>
-    ::iterator
-        i = m_ips.begin();
-        i != m_ips.end(); i++)
-{
-    |\colorbox{blue}{s}|s << i->first << "2" <<i->second << "/n";
-}
-|\colorbox{blue}{if(!fs::WriteTo(m\_banfilepath, ss.str()))}|
-{
-    infostream<<"Ban failed:"<<m_banfilepath;
-    throw SerializationError("BanM::load()");
-}
-m_modified = false;
-\end{minted}
-\begin{center}
-    \caption{Figure 2: Revision of code written in Figure 1 \citep{ahola_2018}}
-\end{center}
+\begin{figure}
+    \centering
+    \setlength{\fboxsep}{1pt}
+    \begin{minted}[
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    bgcolor=black,
+    linenos,
+    escapeinside=||
+    ]{cpp}
+    infostream<<"Ban:"<<m_banfilepath;
+    std::o|\colorbox{blue}{string}|stream |\colorbox{blue}{s}|s(|\colorbox{blue}{std::ios\_base}|);
+    for(std::map<std::string, std::string>
+        ::iterator
+            i = m_ips.begin();
+            i != m_ips.end(); i++)
+    {
+        |\colorbox{blue}{s}|s << i->first << "2" <<i->second << "/n";
+    }
+    |\colorbox{blue}{if(!fs::WriteTo(m\_banfilepath, ss.str()))}|
+    {
+        infostream<<"Ban failed:"<<m_banfilepath;
+        throw SerializationError("BanM::load()");
+    }
+    m_modified = false;
+    \end{minted}
+    \caption{Revision of code written in Figure 1 \citep{ahola_2018}}
+    \label{fig:2}
+\end{figure}
 
 The revision by the user involves a refactor to change the boolean condition contained with the \textit{if} statement. Considering that the \textit{if} condition has been entirely reworked, the algorithm should decipher that that line is completely new. Some parts of the code have also been moved from below the \textit{if} statement to above it, while others have remained in place. There are also trivial changes in whitespace around line 8, which are not highlighted for this example.\\Gestalt's algorithm determines the following to be the changes made after processing all the subsequences:
 
-\sethlcolor{blue}
-
-\begin{minted}[
-frame=lines,
-framesep=2mm,
-baselinestretch=1.2,
-bgcolor=black,
-linenos,
-escapeinside=||,
-highlightlines=3-9,
-highlightcolor=blue
-]{cpp}
-infostream<<"Ban:"<<m_banfilepath;
-std::o|\hl{string}|stream |\hl{ss(std::}|ios|\hl{\_base);}|
-for(std::map<std::string,std::string>
-    ::iterator
-        i = m_ips.begin();
-        i != m_ips.end(); i++)
-{
-    ss << i->first << "2" << i->second << "/n";
-}
-|\hl{if(!fs::WriteTo}(m\_banfilepath, \hl{ss}.str())\hl{)}|
-{
-    infostream<<"Ban failed:"<<m_banfilepath;
-    throw SerializationError("BanM::load()");
-}
-m_modified = false;
-\end{minted}
-\begin{center}
-    \caption{Figure 3: Revision in Figure 2 as analysed by the Gestalt algorithm \citep{ahola_2018}}
-\end{center}
+\begin{figure}
+    \centering
+    \sethlcolor{blue}
+    \begin{minted}[
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    bgcolor=black,
+    linenos,
+    escapeinside=||,
+    highlightlines=3-9,
+    highlightcolor=blue
+    ]{cpp}
+    infostream<<"Ban:"<<m_banfilepath;
+    std::o|\hl{string}|stream |\hl{ss(std::}|ios|\hl{\_base);}|
+    for(std::map<std::string,std::string>
+        ::iterator
+            i = m_ips.begin();
+            i != m_ips.end(); i++)
+    {
+        ss << i->first << "2" << i->second << "/n";
+    }
+    |\hl{if(!fs::WriteTo}(m\_banfilepath, \hl{ss}.str())\hl{)}|
+    {
+        infostream<<"Ban failed:"<<m_banfilepath;
+        throw SerializationError("BanM::load()");
+    }
+    m_modified = false;
+    \end{minted}
+    \caption{Revision in \ref{fig:2} as analysed by the Gestalt algorithm \citep{ahola_2018}}
+    \label{fig:3}
+\end{figure}
 
 This limitation to the algorithm is persistent throughout other diff software as their purpose is to display and calculate how one string can be converted to another and not to show who made the changes. This limitation is emulated in a similar manner in the git-blame tool. However, the git-author tool has a solution to this limitation by using a more powerful diff tool (ldiff) that is able to detect line movements \citep{6676896}. The first part of the algorithm (Algorithm 1) proposed in this project tracks line movements as well as character additions, deletions and replacements. This is done using a similar approach to ldiff \citep{5070564}. This part returns an array of Match objects representing matching characters between two strings.
 
@@ -186,39 +193,112 @@ Using this information, an estimate for most common programming languages would 
 After the most substantial Match object is distinguished from all the other entries in the two dimensional array \textit{diff}, there is a decision point which will help distinguish if a line is new or old. If the line is considered by the threshold to be similar enough to the previous revisions, the lines that have been matched together are appended to an array. The lines that have been matched are zeroed (instead of being deleted to preserve the array size) following this from the \textit{diff} array in line 34. The while loop from line 24 ends when all the Match objects above the threshold have been iterated over and returns an array of all the matching lines.
 
 Running the first part of the algorithm on the previous example used for the Gestalt pattern matching algorithm in Figure 1 reveals the changes as displayed below:
-
-\begin{minted}[
-frame=lines,
-framesep=2mm,
-baselinestretch=1.2,
-bgcolor=black,
-linenos,
-escapeinside=||,
-highlightlines=10,
-highlightcolor=blue
-]{cpp}
-infostream<<"Ban:"<<m_banfilepath;
-std::|\hl{ostring}|stream |\hl{ss(std::i}|os_ba|\hl{s}|e);
-for(std::map<std::string,std::string>
-    ::iterator
-        i = m_ips.begin();
-        i != m_ips.end(); i++)
-{
-    |\hl{s}|s << i->first << "2" << i->second << "/n";
-}
-if(!fs::WriteTo(m_banfilepath, ss.str()))
-{
-    infostream<<"Ban failed:"<<m_banfilepath;
-    throw SerializationError("BanM::load()");
-}
-m_modified = false;
-\end{minted}
-\begin{center}
-    \caption{Figure 4: Diff produced by Algorithm 1 when applied to revision of Figure 1 \citep{ahola_2018}}
-\end{center}
+\sethlcolor{blue}
+\begin{figure}
+    \centering
+    \begin{minted}[
+    frame=lines,
+    framesep=2mm,
+    baselinestretch=1.2,
+    bgcolor=black,
+    linenos,
+    escapeinside=||,
+    highlightlines=10,
+    highlightcolor=blue
+    ]{cpp}
+    infostream<<"Ban:"<<m_banfilepath;
+    std::|\hl{ostring}|stream |\hl{ss(std::i}|os_ba|\hl{s}|e);
+    for(std::map<std::string,std::string>
+        ::iterator
+            i = m_ips.begin();
+            i != m_ips.end(); i++)
+    {
+        |\hl{s}|s << i->first << "2" << i->second << "/n";
+    }
+    if(!fs::WriteTo(m_banfilepath, ss.str()))
+    {
+        infostream<<"Ban failed:"<<m_banfilepath;
+        throw SerializationError("BanM::load()");
+    }
+    m_modified = false;
+    \end{minted}
+    \caption{Diff produced by Algorithm 1 when applied to revision of \ref{fig:1} \citep{ahola_2018}}
+    \label{fig:4}
+\end{figure}
 
 Comparing the diff produced to the diff produced in Figure 2 that showed the actual differences in the file. To produce these results, a \textit{threshold} of 0.6 was used. A change in the \textit{threshold} can very easily change the result of this diff considerably. Larger values of the \textit{threshold} will result in a lot less lines being deemed similar as the evaluation of similarity is much more stern. This will bring about a higher likelihood that the algorithm analyzes the correct lines of code that look nearly indistinguishable. In any case, this causes the algorithm to also fail to identify line changes for lines that are under 60\% similarity. For the example described above, a \textit{threshold} of 0.7 would have caused line 2 to be distinguished as brand new line addition, which may seem valid as it has been reworked significantly.
 
 The second part of the algorithm uses the previously described Algorithm 1 to fully implement code ownership. This is done as follows:
 
-Let a file \textit{f} that has \textit{M} number of revisions/commits be represented as a list $R = \{ r_1, r_2, ..., r_m \}$. 
+Let a file \textit{f} that has \textit{M} number of revisions/commits be represented as a list $R = \{ r_1, r_2, ..., r_m \}$. Each revision $r_i \in R$ contains a list of size $y$ that contains sentences split into characters $C = \{c_1, c_2, ..., c_y\}$ which represents the codebase of \textit{f}. Each $r_i$ is made by a different user $u_i$ from a list of contributors $U = \{u_1, u_2, ..., u_n\}$. 
+
+The second part of the algorithm that attributes the character changes in \textit{f} for all the contributors in \textit{U} can be seen in Algorithm 2.
+
+\begin{algorithm}[ht]
+\SetKwFor{For}{for}{do}{{end for} for}
+\SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{{end if}}
+\SetAlgoLined\DontPrintSemicolon
+\SetKwFunction{proc}{CalculateContributions}
+\SetKwProg{myproc}{procedure}{}{{end procedure}}
+\myproc{\proc{R, base = 10, threshold = 0.6}}{
+    $M \longleftarrow length(R)$\;
+    \For{i in range(1,M)}{
+        \uIf{i = 1}{
+            $y \longleftarrow length(r_i)$\;
+            $Y \longleftarrow $[i for y in range(0, y)]\;
+        }
+        \Else{
+            $matches \longleftarrow CalculateLineChanges(r_{i-1}, r_i, threshold)$\;
+            Sort \textit{matches} using $matches_{m, 1}$\;
+            $pointer \longleftarrow 0$\;
+            $Ynew \longleftarrow [\;]$\;
+            \For{m in matches}{
+                \If{$m_1 \neq pointer$}{
+                    \For{range(0, $m_1 - pointer$)}{
+                        $Ynew.append(i)$\;
+                    }
+                    $pointer \longleftarrow pointer + (m_1 - pointer)$\;
+                }
+                \For{x in range(0, $m_2$)}{
+                    $Ynew$.append($Y_{m_0+x}$)\;
+                }
+            }
+            \If{length($r_i$) $>$ length($Ynew$)}{
+                \For{range(0, length($r_i$)) - length($Ynew$)}{
+                    $Ynew$.append(i)\;
+                }
+            }
+            $Y \longleftarrow Ynew$\;
+        }
+    }
+    \For{$i$ in range(0, length($Y$))}{
+        $score_i \longleftarrow M - Y_i + 1$\;
+        $Persistence_{ruY_i} \longleftarrow Persistence_{ruY_i} + score_i$\;
+        $NumOfChars_{ruy_i} \longleftarrow NumOfChars_{ruy_i} + 1$
+    }
+    \For{$i$ in range(1, length($Persistence$)}{
+        $Persistence_i \longleftarrow log_{base}(Persistence_i)$
+    }
+    \Return{$[Persistence, NumOfChars]$}
+}
+\caption{Calculate contributions for each user to a file}
+\end{algorithm}
+
+The way this part of the algorithm works is it calculates the persistence scores using the character-level revision history produced by the first half in Algorithm 1. The array $Y$ is used as a commit attribution record for each $f$. When commits are processed with characters being added, removed and replaced, the array $Y$ is changed to reflect where the new lines of code came from. This is done by adding the current commit number $i$ to the array. An example of how this works follows:
+If a user $u_1$ adds the following characters ``wxyz" to the code in the first commit $r_1$, $Y = (1,1,1,1)$. This code is changed in the following commit $r_2$ to ``waaz" made by a second user $u_2$. This makes the array $Y = (1,2,2,1)$. The reason the array $Y$ stores these commit numbers is to allow the code to be attributed to the user that made each revision using the $ru$ dictionary, which relates each user key to a revision value. This process can be seen in a larger visual example in \ref{fig:5}.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/tracking_changes.jpg}
+    \caption{Changes between two commits at character level}
+    \label{fig:5}
+\end{figure}
+
+The $score$ variable is used to hold the persistence score for each character and it indicates the quality of the code. This $score$ is only calculated after the final commit has been processed by the algorithm. This $score$ is calculated in line 35 and it practically inverses the results of the $Y$ array. The $score$ for each user is then finally processed by a log function, which counteracts the results produced by high volume and high traffic files that receive the majority of the commits. The $base$ of the log function can be modified to control the high volume of commits from users that write the bulk of the codebase at the start of a project. This procedure can be seen in Figure \ref{fig:6}. 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.5]{images/persistence_calc.jpg}
+    \caption{Visualisation of persistence calculation}
+    \label{fig:6}
+\end{figure}
+
+In Figure \ref{fig:6}, User 1's contribution in terms of a percentage is $\frac{1.89}{(1.89+1.32)} \approx 59\%$. Analysing the same example using the methods discussed in Section 2.2, the $Chars$ measure that uses the character count gives a percentage of around 72\%. Using the $Commits$ measure, the percentage for User 1 is 50\%. $LOC$ and \textit{git-author} give results of 100\% and around 72\% respectively. The measures that use lower levels of abstraction give more accurate estimation but both $Chars$ and \textit{git-author} do not utilise the age of each character and just count each character as 1. For this project, the purpose is to give older character changes with greater value as this is definition of code quality as defined previously. User 1 has written the majority of the code. However, User 2 made changes in the $2^{nd}$ commit that have survived and have caused them to be labelled as important. 

@@ -1,5 +1,81 @@
-\chapter{Results/Evaluation}
+\chapter{Evaluation}
+This chapter aims to examine and explore the application when being compared with existing algorithms. This will be done using benchmark tests between the applications and its competitors. 
 
-\section{Software Testing}
+\section{Comparisons}
 
-\section{Section Heading}
+For this project, three different scales of repositories were utilised for testing and comparison. This provided both validation for the underlying algorithm and a comparison of the algorithm's performance in different scenarios. The four repositories used were: Minetest \citep{ahola_2021}, a C++ ``open-source voxel game engine" similar to Minecraft; HospitalHeroes, a mobile application created as part of the Software Engineering Major Project written in Java; dplyr, a grammar created for data manipulation for the R programming language written in R. Minetest was chosen for its sheer size and its high level of crowdsourcing; as of April 2021, the repository had 9,337 commits made by 523 contributors. This repository is a great test for the application as it has around 1000 files with a large range of programming languages for many different purposes such as Python, C++, Bash, Lua and HTML. HospitalHeroes was chosen since it was created in the same environment that the application will be integrated into. It is a student group software engineering project which is the target dataset for this application. This project is much smaller than the aforementioned Minetest repository; the repository has 445 commits from only 7 contributors. Lastly, dplyr was chosen to represent a repository that is between the other two repositories; the repository has 7,109 commits from 244 contributors. A collection of binary-based files (namely jar, png, bmp, dll, jpg, jpeg, exe, ttf, ico, icns, svg, ogg, mp3, wav and bat files) were excluded from this project as the algorithm analyses text-based files and not binary files. 
+
+Different repository managers usually differ in the way they distinguish who makes and how changes made to files. For instance, Apache Subversion does not differentiate a user that commits the changes (the committer) and the user that actually made the changes (the author). On the contary, \texttt{git} and its many repository managers (e.g. GitHub, Gitlab, BitBucket) actually differentiates the author from the committer, which allows the application to accurately contribute changes to the author. 
+
+\subsection{Correlation-based Comparison}
+
+For the following measures, the commits were retrieved for each repository per file. For users that contributed to more than one file, their scores were combined for all the different measures. The measures that will be compared are the numerous measure discussed previously in Section 2.2 alongside this project's proposed contribution algorithm. The Kendall rank correlation coefficient (often referred to as Kendall's $\tau$ rank correlation) was used to compare whether the various ranking methods agree with the result received. Since tau values are bounded between 0 and 1, it is easy to evaluate the agreements between each measure. These results can be seen below in Tables \ref{table:1}, \ref{table:2}, and \ref{table:3}. The proposed algorithm is referred to as Algo in these tables.
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l l l l l l l}
+         \hline
+         & Commits & Touch & LOC & gitauthor & Chars & Algo & T \\
+         \hline
+         Commits & 1 & & & & & & \\
+         Touch & 0.563 & 1 & & & & & \\
+         LOC & 0.488 & 0.669 & 1 & & & & \\
+         gitauthor & 0.486 & 0.567 & 0.781 & 1 & & & \\
+         Chars & 0.505 & 0.533 & 0.720 & 0.825 & 1 & & \\
+         Algo & 0.586 & 0.679 & 0.576 & 0.623 & 0.684 & 1 & \\
+         T & 0.349 & 0.443 & 0.356 & 0.365 & 0.346 & 0.381 & 1 \\
+         \hline
+    \end{tabular}
+    \caption{Kendall tau for Minetest}
+    \label{table:1}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l l l l l l l}
+         \hline
+         & Commits & Touch & LOC & gitauthor & Chars &  Algo & T \\
+         \hline
+         Commits & 1 & & & & & & \\
+         Touch & 0.322 & 1 & & & & & \\
+         LOC & 0.327 & 0.854 & 1 & & & & \\
+         gitauthor & 0.319 & 0.723 & 0.847 & 1 & & & \\
+         Chars & 0.242 & 0.648 & 0.724 & 0.848 & 1 & & \\
+         Algo & 0.284 & 0.699 & 0.683 & 0.768 & 0.843 & 1 & \\
+         T & -0.202 & 0.370 & 0.300 & 0.310 & 0.392 & 0.379 & 1 \\
+         \hline
+    \end{tabular}
+    \caption{Kendall tau for HospitalHeroes}
+    \label{table:2}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{l l l l l l l l}
+         \hline
+         & Commits & Touch & LOC & gitauthor & Chars &  Algo & T \\
+         \hline
+         Commits & 1 & & & & & & \\
+         Touch & 0.285 & 1 & & & & & \\
+         LOC & 0.283 & 0.878 & 1 & & & & \\
+         gitauthor & 0.301 & 0.728 & 0.782 & 1 & & & \\
+         Chars & 0.306 & 0.644 & 0.694 & 0.814 & 1 & & \\
+         Algo & 0.316 & 0.674 & 0.667 & 0.767 & 0.899 & 1 & \\
+         T & 0.166 & 0.422 & 0.387 & 0.369 & 0.356 & 0.357 & 1 \\
+         \hline
+    \end{tabular}
+    \caption{Kendall tau for dplyr}
+    \label{table:3}
+\end{table}
+
+The proposed algorithm can clearly be seen to agree with the rest of the measures. This is a great indicator showing the results produced by the algorithm are not inordinately different from those produced by the other measures. The way the Kendall coefficient works is a positive coefficient means that as a score from one ranking system rises, the other ranking system also increases proportionally. On the other hand, negative coefficients show that users are ranked in reverse when compared between two measures. Any results near zero show that the results have no correlation, showing a ranking system produces poor results. Luckily, the algorithm in this project does not produce these kind of results. Instead, the algorithm produces results that are not too dissimilar to those from other ranking measures. The largest dissimilarity between any measures can be seen from the \textit{T} measure, which is expected since \textit{T} is the only measure that looks at time as opposed to textual elements of the code. The algorithm is most correlated with \textit{gitauthor} and \textit{Chars} due to the fact the algorithm is partly a character based measure. The only negative coefficient can be seen between the \textit{Commits} and \textit{T} measures in the HospitalHeroes repository. This shows that \textit{Commits} is limited in its measurement of contribution since all other methods of ranking have a positive coefficient with the \textit{T} measure. For instance, a succession of commits in a short time span (e.g. code churn) for a user is not the same as large work sessions, which is what the \textit{T} measure represents.
+
+However, it is clear that the algorithm is not in complete accordance with any existing ranking measures. This is as expected since the algorithm looks to include extra factors when regarding the final rankings and engulfs a lot of these different measures together.
+
+\section{Performance}
+
+Using the algorithm for analysing a repository is a resource intensive task. When trying to calculate a time complexity, there is a lot of different levels of abstraction that can be analysed and a lot of external factors to consider involving the repository and how the contributors work. For example, a repository with a small number of commits that all have large amounts of line changes associated with them will allow the algorithm to run much faster than a repository with a large number of smaller sized commits. 
+
+From a high level overview, the application's runtime is dependant on the number of commits $N$ that each file is associated with $f(O(N))$. However, iterating over previous commits is not necessary every time a new commit is made to the repository. The use of the \textit{Y} variable can be expanded to store the variable's last state. When a new commit is made to the repository, the stored $Y$ can be retrieved and reprocessed with the new commit. This will result in a smaller time complexity of $O(1)$ while losing space for storing a version of $Y$ for each file in the repository.  
+
+At a lower level of abstraction, between each two revisions ($r_i$ and $r_{i-1}$) that contain the lines $l_i$ and $l_{i-1}$, a double for loop is instantiated. The best case scenario for this loop is $O(l_i)$ when $l_i \geq l_{i-1}$ or $O(l_{i-1})$ if $l_i < l_{i-1}$. However, the worst case means that the resulting time complexity is $O(l_i * l_{i-1})$, meaning each line of $r_i$ is compared at least once with each line of $r_{i-1}$. When new lines are detected, the Gestalt algorithm is run on the entire text for $r_i$ and $r_{i-1}$. This results in a quadratic worst case of $O(n * m)$ where $n$ and $m$ are the number of characters in each revision. Practically, the greatest causes of time overhead for a calculation to finish are the number of commits in a repository and the average number of lines in each file of the repository.

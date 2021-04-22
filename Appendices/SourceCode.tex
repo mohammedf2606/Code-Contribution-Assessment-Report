@@ -1,8 +1,54 @@
 \chapter{Source Code}
-\section{Instructions}
-Complete source code listings must be submitted as an appendix to the report. The project source codes are usually spread out over several files/units. You should try to help the reader to navigate through your source code by providing a ``table of contents'' (titles of these files/units and one line descriptions). The first page of the program listings folder must contain the following statement certifying the work as your own: ``I verify that I am the sole author of the programs contained in this folder, except where explicitly stated to the contrary''. Your (typed) signature and the date should follow this statement.
 
-All work on programs must stop once the code is submitted to KEATS. You are required to keep safely several copies of this version of the program and you must use one of these copies in the project examination. Your examiners may ask to see the last-modified dates of your program files, and may ask you to demonstrate that the program files you use in the project examination are identical to the program files you have uploaded to KEATS. Any attempt to demonstrate code that is not included in your submitted source listings is an attempt to cheat; any such attempt will be reported to the KCL Misconduct Committee.
+\thispagestyle{empty}
+\begin{center}
+    \textbf{Originality Avowal}\\*
+    \begin{flushleft}
+        I verify that I am the sole author of the programs contained in this folder, except where explicitly stated to the contrary. \\
+    \end{flushleft}
+    \begin{flushright}
+        \normalsize{Fahim Mohammed}\\*
+        \normalsize{April 7, 2021}\\*
+    \end{flushright}
+\end{center}
 
-\textbf{You may find it easier to firstly generate a PDF of your source code using a text editor and then merge it to the end of your report. There are many free tools available that allow you to merge PDF files.}
+\section{Table of Contents}
+
+\begin{center}
+\begin{tabular}{ | m{15em} | m{18em}| m{4em} | } 
+\hline
+\textbf{Filename} & \textbf{Description} & \textbf{Page \#} \\ \hline
+
+Gemfile & File containing all the Ruby dependencies for the project & 1 \\ \hline
+.gitignore & All directories and extensions ignored for version control & 2 \\ \hline
+gitmain.rb & GitHub API integration for retrieving relevant repository info & 4-5  \\\hline
+matcher.rb & Implementation of the Gestalt pattern matching algorithm & 6-8 \\ \hline
+contribution.rb & The main algorithm created as a part of this project & 9-12 \\ \hline
+home/index.html.erb & View for homepage of the application & 13 \\ \hline
+files/show.html.erb & View for displaying per file visualisation & 14 \\ \hline
+files/index.html.erb & View displaying all the files in a repository & 15 \\ \hline
+repos/show.html.erb & View displaying visualisations for a given repository & 16  \\ \hline
+repos/index.html.erb & View listing all the private and public repositories of a user & 17 \\ \hline
+layouts/files.html.erb & Custom layout for the per file visualisation & 18 \\ \hline
+layouts/application.html.erb & Default layout file for all other views & 19 \\ \hline
+home.scss & Stylesheet for homepage & 20 \\ \hline
+files.scss & Stylesheet for file-based views & 21 \\ \hline
+repos.scss & Stylesheet for repository list & 22 \\ \hline
+application.scss & Stylesheet for entire application & 23 \\ \hline
+auth-buttons.css & Stylesheet for button on homepage & 24-26 \\ \hline
+helpers/application\_helper.rb & Helper that is used to start GitHub authorisation & 27 \\ \hline
+controllers/home\_controller.rb & Controller for the homepage & 28 \\ \hline
+controllers/files\_controller.rb & Controller for all the file-based views & 29 \\ \hline
+\end{tabular}
+
+\begin{tabular}{ | m{16em} | m{18em}| m{4em} | } 
+\hline
+\textbf{Filename} & \textbf{Description} & \textbf{Page \#} \\ \hline
+controllers/repos\_controller.rb & Controller for the repo list and the repo visualisation & 30-31 \\ \hline
+controllers/application\_controller.rb & Abstract controller that is inherited by other controllers & 32 \\ \hline
+config/routes.rb & Routes page that controls the URLs of the application & 33 \\ \hline  
+config/application.rb & The main application file where all other Ruby files are automatically loaded & 34 \\ \hline
+config/application.yml & Environmental variables used for GitHub integration & 35 \\ \hline
+\end{tabular}
+\end{center}
 
